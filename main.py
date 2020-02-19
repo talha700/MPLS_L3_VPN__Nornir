@@ -1,8 +1,11 @@
+import time
 from nornir import InitNornir
 from nornir.core.filter import F
 from nornir.plugins.tasks import networking, text
 from nornir.plugins.functions.text import print_title
 from nornir.plugins.functions.text import print_result
+
+start_timer=time.perf_counter()
 
 nr = InitNornir(config_file="config.yaml" , dry_run=False)
 
@@ -20,4 +23,9 @@ def mpls_conf(task):
 
 result=nr.run(task=mpls_conf)
 print_result(result)
+
+end_timer=time.perf_counter()
+timer=f'Executed in= {round(end_timer-start_timer, 1)} second(s)'
+print(timer)
+
 
