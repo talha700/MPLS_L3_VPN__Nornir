@@ -112,6 +112,13 @@ router bgp 62001
  neigh 5.5.5.5 send-community
  exit
  !
+ neigh 6.6.6.6 remote-as 62001
+ neigh 6.6.6.6 update-source loop0
+ address-family vpnv4
+ neigh 6.6.6.6 activate
+ neigh 6.6.6.6 send-community
+ exit
+ !
 router bgp 62001
  address-family ipv4 vrf C1
  redistribute ospf 2
@@ -174,6 +181,13 @@ PE1(config-router)# neigh 5.5.5.5 update-source loop0
 PE1(config-router)# address-family vpnv4
 PE1(config-router-af)# neigh 5.5.5.5 activate
 PE1(config-router-af)# neigh 5.5.5.5 send-community
+PE1(config-router-af)# exit
+PE1(config-router)# !
+PE1(config-router)# neigh 6.6.6.6 remote-as 62001
+PE1(config-router)# neigh 6.6.6.6 update-source loop0
+PE1(config-router)# address-family vpnv4
+PE1(config-router-af)# neigh 6.6.6.6 activate
+PE1(config-router-af)# neigh 6.6.6.6 send-community
 PE1(config-router-af)# exit
 PE1(config-router)# !
 PE1(config-router)#router bgp 62001
@@ -242,6 +256,13 @@ router bgp 62001
  neigh 4.4.4.4 send-community
  exit
  !
+ neigh 6.6.6.6 remote-as 62001
+ neigh 6.6.6.6 update-source loop0
+ address-family vpnv4
+ neigh 6.6.6.6 activate
+ neigh 6.6.6.6 send-community
+ exit
+ !
 router bgp 62001
  address-family ipv4 vrf C1
  redistribute ospf 2
@@ -303,6 +324,13 @@ PE2(config-router)# neigh 4.4.4.4 update-source loop0
 PE2(config-router)# address-family vpnv4
 PE2(config-router-af)# neigh 4.4.4.4 activate
 PE2(config-router-af)# neigh 4.4.4.4 send-community
+PE2(config-router-af)# exit
+PE2(config-router)# !
+PE2(config-router)# neigh 6.6.6.6 remote-as 62001
+PE2(config-router)# neigh 6.6.6.6 update-source loop0
+PE2(config-router)# address-family vpnv4
+PE2(config-router-af)# neigh 6.6.6.6 activate
+PE2(config-router-af)# neigh 6.6.6.6 send-community
 PE2(config-router-af)# exit
 PE2(config-router)# !
 PE2(config-router)#router bgp 62001
@@ -423,4 +451,5 @@ PE3(config)#no mpls ip propagate-ttl
 PE3(config)#end
 PE3#[0m
 [0m[1m[32m^^^^ END mpls_conf ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0mExecuted in= 7.9 second(s)[0m
 [0m
