@@ -1,0 +1,426 @@
+[1m[36mmpls_conf***********************************************************************[0m
+[0m[1m[34m* P1 ** changed : True *********************************************************[0m
+[0m[1m[32mvvvv mpls_conf ** changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO[0m
+[0m[1m[32m---- MPLS layer 3 vpn ** changed : False --------------------------------------- INFO[0m
+[0mmpls ip
+mpls label protocol ldp
+interface e0/0
+mpls ip
+interface e0/1
+mpls ip
+[0m
+[0m[1m[33m---- Loading configuration ** changed : True ----------------------------------- INFO[0m
+[0mconfig term
+Enter configuration commands, one per line.  End with CNTL/Z.
+P1(config)#mpls ip
+P1(config)#mpls label protocol ldp
+P1(config)#interface e0/0
+P1(config-if)#mpls ip
+P1(config-if)#interface e0/1
+P1(config-if)#mpls ip
+P1(config-if)#end
+P1#[0m
+[0m[1m[32m^^^^ END mpls_conf ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m[1m[34m* P2 ** changed : True *********************************************************[0m
+[0m[1m[32mvvvv mpls_conf ** changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO[0m
+[0m[1m[32m---- MPLS layer 3 vpn ** changed : False --------------------------------------- INFO[0m
+[0mmpls ip
+mpls label protocol ldp
+interface e0/0
+mpls ip
+interface e0/1
+mpls ip
+[0m
+[0m[1m[33m---- Loading configuration ** changed : True ----------------------------------- INFO[0m
+[0mconfig term
+Enter configuration commands, one per line.  End with CNTL/Z.
+P2(config)#mpls ip
+P2(config)#mpls label protocol ldp
+P2(config)#interface e0/0
+P2(config-if)#mpls ip
+P2(config-if)#interface e0/1
+P2(config-if)#mpls ip
+P2(config-if)#end
+P2#[0m
+[0m[1m[32m^^^^ END mpls_conf ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m[1m[34m* P3 ** changed : True *********************************************************[0m
+[0m[1m[32mvvvv mpls_conf ** changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO[0m
+[0m[1m[32m---- MPLS layer 3 vpn ** changed : False --------------------------------------- INFO[0m
+[0mmpls ip
+mpls label protocol ldp
+interface e0/0
+mpls ip
+interface e0/1
+mpls ip
+interface e0/2
+mpls ip
+[0m
+[0m[1m[33m---- Loading configuration ** changed : True ----------------------------------- INFO[0m
+[0mconfig term
+Enter configuration commands, one per line.  End with CNTL/Z.
+P3(config)#mpls ip
+P3(config)#mpls label protocol ldp
+P3(config)#interface e0/0
+P3(config-if)#mpls ip
+P3(config-if)#interface e0/1
+P3(config-if)#mpls ip
+P3(config-if)#interface e0/2
+P3(config-if)#mpls ip
+P3(config-if)#end
+P3#[0m
+[0m[1m[32m^^^^ END mpls_conf ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m[1m[34m* PE1 ** changed : True ********************************************************[0m
+[0m[1m[32mvvvv mpls_conf ** changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO[0m
+[0m[1m[32m---- MPLS layer 3 vpn ** changed : False --------------------------------------- INFO[0m
+[0mip vrf C1
+ rd 100:1
+ route-target both 100:1
+ exit
+!
+router ospf 2 vrf C1
+ router-id 10.0.1.1
+ exit
+!
+int e0/2
+ ip vrf forward C1
+ ip address 10.0.1.1 255.255.255.0
+ ip ospf 2 area 0
+ no shutdown
+ exit
+!
+ip vrf C2
+ rd 200:2
+ route-target both 200:2
+ exit
+!
+router ospf 3 vrf C2
+ router-id 10.0.1.1
+ exit
+!
+int e0/1
+ ip vrf forward C2
+ ip address 10.0.1.1 255.255.255.0
+ ip ospf 3 area 0
+ no shutdown
+ exit
+!
+router bgp 62001
+ neigh 5.5.5.5 remote-as 62001
+ neigh 5.5.5.5 update-source loop0
+ address-family vpnv4
+ neigh 5.5.5.5 activate
+ neigh 5.5.5.5 send-community
+ exit
+ !
+router bgp 62001
+ address-family ipv4 vrf C1
+ redistribute ospf 2
+ redistribute connected
+ address-family ipv4 vrf C2
+ redistribute ospf 3
+ redistribute connected
+ exit
+ !
+router ospf 2 vrf C1
+ redistribute bgp  62001 subnets
+ redistribute connected
+ exit
+ !
+router ospf 3 vrf C2
+ redistribute bgp  62001 subnets
+ redistribute connected
+ exit
+ !
+no mpls ip propagate-ttl[0m
+[0m[1m[33m---- Loading configuration ** changed : True ----------------------------------- INFO[0m
+[0mconfig term
+Enter configuration commands, one per line.  End with CNTL/Z.
+PE1(config)#ip vrf C1
+PE1(config-vrf)# rd 100:1
+PE1(config-vrf)# route-target both 100:1
+PE1(config-vrf)# exit
+PE1(config)#!
+PE1(config)#router ospf 2 vrf C1
+PE1(config-router)# router-id 10.0.1.1
+PE1(config-router)# exit
+PE1(config)#!
+PE1(config)#int e0/2
+PE1(config-if)# ip vrf forward C1
+PE1(config-if)# ip address 10.0.1.1 255.255.255.0
+PE1(config-if)# ip ospf 2 area 0
+PE1(config-if)# no shutdown
+PE1(config-if)# exit
+PE1(config)#!
+PE1(config)#ip vrf C2
+PE1(config-vrf)# rd 200:2
+PE1(config-vrf)# route-target both 200:2
+PE1(config-vrf)# exit
+PE1(config)#!
+PE1(config)#router ospf 3 vrf C2
+PE1(config-router)# router-id 10.0.1.1
+% OSPF: router-id 10.0.1.1 in use by ospf process 2
+PE1(config-router)# exit
+PE1(config)#!
+PE1(config)#int e0/1
+PE1(config-if)# ip vrf forward C2
+PE1(config-if)# ip address 10.0.1.1 255.255.255.0
+PE1(config-if)# ip ospf 3 area 0
+PE1(config-if)# no shutdown
+PE1(config-if)# exit
+PE1(config)#!
+PE1(config)#router bgp 62001
+PE1(config-router)# neigh 5.5.5.5 remote-as 62001
+PE1(config-router)# neigh 5.5.5.5 update-source loop0
+PE1(config-router)# address-family vpnv4
+PE1(config-router-af)# neigh 5.5.5.5 activate
+PE1(config-router-af)# neigh 5.5.5.5 send-community
+PE1(config-router-af)# exit
+PE1(config-router)# !
+PE1(config-router)#router bgp 62001
+PE1(config-router)# address-family ipv4 vrf C1
+PE1(config-router-af)# redistribute ospf 2
+PE1(config-router-af)# redistribute connected
+PE1(config-router-af)# address-family ipv4 vrf C2
+PE1(config-router-af)# redistribute ospf 3
+PE1(config-router-af)# redistribute connected
+PE1(config-router-af)# exit
+PE1(config-router)# !
+PE1(config-router)#router ospf 2 vrf C1
+PE1(config-router)# redistribute bgp  62001 subnets
+PE1(config-router)# redistribute connected
+PE1(config-router)# exit
+PE1(config)# !
+PE1(config)#router ospf 3 vrf C2
+PE1(config-router)# redistribute bgp  62001 subnets
+PE1(config-router)# redistribute connected
+PE1(config-router)# exit
+PE1(config)# !
+PE1(config)#no mpls ip propagate-ttl
+PE1(config)#end
+PE1#[0m
+[0m[1m[32m^^^^ END mpls_conf ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m[1m[34m* PE2 ** changed : True ********************************************************[0m
+[0m[1m[32mvvvv mpls_conf ** changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO[0m
+[0m[1m[32m---- MPLS layer 3 vpn ** changed : False --------------------------------------- INFO[0m
+[0mip vrf C1
+ rd 100:1
+ route-target both 100:1
+ exit
+!
+router ospf 2 vrf C1
+ router-id 10.0.3.1
+ exit
+!
+int e0/2
+ ip vrf forward C1
+ ip address 10.0.3.1 255.255.255.0
+ ip ospf 2 area 0
+ no shutdown
+ exit
+!
+ip vrf C2
+ rd 200:2
+ route-target both 200:2
+ exit
+!
+router ospf 3 vrf C2
+ router-id 10.0.2.1
+ exit
+!
+int e0/1
+ ip vrf forward C2
+ ip address 10.0.2.1 255.255.255.0
+ ip ospf 3 area 0
+ no shutdown
+ exit
+!
+router bgp 62001
+ neigh 4.4.4.4 remote-as 62001
+ neigh 4.4.4.4 update-source loop0
+ address-family vpnv4
+ neigh 4.4.4.4 activate
+ neigh 4.4.4.4 send-community
+ exit
+ !
+router bgp 62001
+ address-family ipv4 vrf C1
+ redistribute ospf 2
+ redistribute connected
+ address-family ipv4 vrf C2
+ redistribute ospf 3
+ redistribute connected
+ exit
+ !
+router ospf 2 vrf C1
+ redistribute bgp  62001 subnets
+ redistribute connected
+ exit
+ !
+router ospf 3 vrf C2
+ redistribute bgp  62001 subnets
+ redistribute connected
+ exit
+ !
+no mpls ip propagate-ttl[0m
+[0m[1m[33m---- Loading configuration ** changed : True ----------------------------------- INFO[0m
+[0mconfig term
+Enter configuration commands, one per line.  End with CNTL/Z.
+PE2(config)#ip vrf C1
+PE2(config-vrf)# rd 100:1
+PE2(config-vrf)# route-target both 100:1
+PE2(config-vrf)# exit
+PE2(config)#!
+PE2(config)#router ospf 2 vrf C1
+PE2(config-router)# router-id 10.0.3.1
+PE2(config-router)# exit
+PE2(config)#!
+PE2(config)#int e0/2
+PE2(config-if)# ip vrf forward C1
+PE2(config-if)# ip address 10.0.3.1 255.255.255.0
+PE2(config-if)# ip ospf 2 area 0
+PE2(config-if)# no shutdown
+PE2(config-if)# exit
+PE2(config)#!
+PE2(config)#ip vrf C2
+PE2(config-vrf)# rd 200:2
+PE2(config-vrf)# route-target both 200:2
+PE2(config-vrf)# exit
+PE2(config)#!
+PE2(config)#router ospf 3 vrf C2
+PE2(config-router)# router-id 10.0.2.1
+PE2(config-router)# exit
+PE2(config)#!
+PE2(config)#int e0/1
+PE2(config-if)# ip vrf forward C2
+PE2(config-if)# ip address 10.0.2.1 255.255.255.0
+PE2(config-if)# ip ospf 3 area 0
+PE2(config-if)# no shutdown
+PE2(config-if)# exit
+PE2(config)#!
+PE2(config)#router bgp 62001
+PE2(config-router)# neigh 4.4.4.4 remote-as 62001
+PE2(config-router)# neigh 4.4.4.4 update-source loop0
+PE2(config-router)# address-family vpnv4
+PE2(config-router-af)# neigh 4.4.4.4 activate
+PE2(config-router-af)# neigh 4.4.4.4 send-community
+PE2(config-router-af)# exit
+PE2(config-router)# !
+PE2(config-router)#router bgp 62001
+PE2(config-router)# address-family ipv4 vrf C1
+PE2(config-router-af)# redistribute ospf 2
+PE2(config-router-af)# redistribute connected
+PE2(config-router-af)# address-family ipv4 vrf C2
+PE2(config-router-af)# redistribute ospf 3
+PE2(config-router-af)# redistribute connected
+PE2(config-router-af)# exit
+PE2(config-router)# !
+PE2(config-router)#router ospf 2 vrf C1
+PE2(config-router)# redistribute bgp  62001 subnets
+PE2(config-router)# redistribute connected
+PE2(config-router)# exit
+PE2(config)# !
+PE2(config)#router ospf 3 vrf C2
+PE2(config-router)# redistribute bgp  62001 subnets
+PE2(config-router)# redistribute connected
+PE2(config-router)# exit
+PE2(config)# !
+PE2(config)#no mpls ip propagate-ttl
+PE2(config)#end
+PE2#[0m
+[0m[1m[32m^^^^ END mpls_conf ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m[1m[34m* PE3 ** changed : True ********************************************************[0m
+[0m[1m[32mvvvv mpls_conf ** changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO[0m
+[0m[1m[32m---- MPLS layer 3 vpn ** changed : False --------------------------------------- INFO[0m
+[0mip vrf C1
+ rd 100:1
+ route-target both 100:1
+ exit
+!
+router ospf 2 vrf C1
+ router-id 10.0.5.1
+ exit
+!
+int e0/1
+ ip vrf forward C1
+ ip address 10.0.5.1 255.255.255.0
+ ip ospf 2 area 0
+ no shutdown
+ exit
+!
+router bgp 62001
+ neigh 4.4.4.4 remote-as 62001
+ neigh 4.4.4.4 update-source loop0
+ address-family vpnv4
+ neigh 4.4.4.4 activate
+ neigh 4.4.4.4 send-community
+ exit
+ !
+ neigh 5.5.5.5 remote-as 62001
+ neigh 5.5.5.5 update-source loop0
+ address-family vpnv4
+ neigh 5.5.5.5 activate
+ neigh 5.5.5.5 send-community
+ exit
+ !
+router bgp 62001
+ address-family ipv4 vrf C1
+ redistribute ospf 2
+ redistribute connected
+ exit
+ !
+router ospf 2 vrf C1
+ redistribute bgp  62001 subnets
+ redistribute connected
+ exit
+ !
+no mpls ip propagate-ttl[0m
+[0m[1m[33m---- Loading configuration ** changed : True ----------------------------------- INFO[0m
+[0mconfig term
+Enter configuration commands, one per line.  End with CNTL/Z.
+PE3(config)#ip vrf C1
+PE3(config-vrf)# rd 100:1
+PE3(config-vrf)# route-target both 100:1
+PE3(config-vrf)# exit
+PE3(config)#!
+PE3(config)#router ospf 2 vrf C1
+PE3(config-router)# router-id 10.0.5.1
+PE3(config-router)# exit
+PE3(config)#!
+PE3(config)#int e0/1
+PE3(config-if)# ip vrf forward C1
+PE3(config-if)# ip address 10.0.5.1 255.255.255.0
+PE3(config-if)# ip ospf 2 area 0
+PE3(config-if)# no shutdown
+PE3(config-if)# exit
+PE3(config)#!
+PE3(config)#router bgp 62001
+PE3(config-router)# neigh 4.4.4.4 remote-as 62001
+PE3(config-router)# neigh 4.4.4.4 update-source loop0
+PE3(config-router)# address-family vpnv4
+PE3(config-router-af)# neigh 4.4.4.4 activate
+PE3(config-router-af)# neigh 4.4.4.4 send-community
+PE3(config-router-af)# exit
+PE3(config-router)# !
+PE3(config-router)# neigh 5.5.5.5 remote-as 62001
+PE3(config-router)# neigh 5.5.5.5 update-source loop0
+PE3(config-router)# address-family vpnv4
+PE3(config-router-af)# neigh 5.5.5.5 activate
+PE3(config-router-af)# neigh 5.5.5.5 send-community
+PE3(config-router-af)# exit
+PE3(config-router)# !
+PE3(config-router)#router bgp 62001
+PE3(config-router)# address-family ipv4 vrf C1
+PE3(config-router-af)# redistribute ospf 2
+PE3(config-router-af)# redistribute connected
+PE3(config-router-af)# exit
+PE3(config-router)# !
+PE3(config-router)#router ospf 2 vrf C1
+PE3(config-router)# redistribute bgp  62001 subnets
+PE3(config-router)# redistribute connected
+PE3(config-router)# exit
+PE3(config)# !
+PE3(config)#no mpls ip propagate-ttl
+PE3(config)#end
+PE3#[0m
+[0m[1m[32m^^^^ END mpls_conf ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[0m

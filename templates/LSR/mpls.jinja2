@@ -1,0 +1,6 @@
+mpls ip
+mpls label protocol ldp
+{% for int in host.data.int_mpls %}
+interface {{ int }}
+mpls ip
+{% endfor %}

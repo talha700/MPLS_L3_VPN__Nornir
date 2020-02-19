@@ -1,0 +1,8 @@
+---
+LSR:
+    data:
+        enabled : True
+
+E_LSR:
+    data:
+        enabled : True

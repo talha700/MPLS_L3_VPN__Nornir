@@ -1,0 +1,124 @@
+---
+PE1:
+    hostname: 172.16.4.2
+    username: cisco
+    password: admin
+    platform: ios
+    groups:
+        - E_LSR
+    data:
+        bgp_neighbour :
+            - 5.5.5.5
+        loop0 : 4.4.4.4
+        ASN: 62001
+        serving:
+         - company:
+            vrf_name: C1
+            int_to: e0/2
+            rd : 100:1
+            route_target : 100:1
+            routing_process : ospf 2
+            network_id: 10.0.1.0
+            mask: 255.255.255.0
+         - company:
+            vrf_name : C2
+            int_to : e0/1
+            rd : 200:2
+            route_target : 200:2
+            routing_process : ospf 3
+            network_id : 10.0.1.0
+            mask: 255.255.255.0
+ 
+PE2:
+    hostname: 172.16.2.2
+    username: cisco
+    password: admin
+    platform: ios
+    groups:
+        - E_LSR
+    data:
+        bgp_neighbour :
+            - 4.4.4.4
+        loop0 : 5.5.5.5
+        ASN: 62001
+        serving:
+         - company :
+            vrf_name : C1
+            int_to: e0/2
+            rd : 100:1
+            route_target : 100:1
+            routing_process : ospf 2
+            network_id: 10.0.3.0 
+            mask: 255.255.255.0
+         - company :
+            vrf_name : C2
+            int_to : e0/1
+            rd : 200:2
+            route_target : 200:2
+            routing_process : ospf 3
+            network_id : 10.0.2.0
+            mask: 255.255.255.0
+PE3:
+    hostname: 172.16.6.2
+    username: cisco
+    password: admin
+    platform: ios
+    groups:
+        - E_LSR
+    data:
+        bgp_neighbour :
+            - 4.4.4.4
+            - 5.5.5.5
+        loop0 : 6.6.6.6
+        ASN: 62001
+        serving:
+         - company :
+            vrf_name : C1
+            int_to: e0/1
+            rd : 100:1
+            route_target : 100:1
+            routing_process : ospf 2
+            network_id: 10.0.5.0 
+            mask: 255.255.255.0
+P1:
+    hostname: 172.16.3.1
+    username: cisco
+    password: admin
+    platform: ios
+    groups:
+        - LSR
+    data:
+        loop0 : 1.1.1.1
+        ASN: 62001
+        int_mpls:
+            - e0/0
+            - e0/1
+
+P2:
+    hostname: 172.16.3.2
+    username: cisco
+    password: admin
+    platform: ios
+    groups:
+        - LSR
+    data:
+        loop0 : 2.2.2.2
+        ASN: 62001
+        int_mpls:
+            - e0/0
+            - e0/1
+
+P3:
+    hostname: 172.16.1.2
+    username: cisco
+    password: admin
+    platform: ios
+    groups:
+        - LSR
+    data:
+        loop0 : 3.3.3.3
+        ASN: 62001
+        int_mpls:
+            - e0/0
+            - e0/1
+            - e0/2

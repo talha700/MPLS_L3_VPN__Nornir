@@ -1,0 +1,44 @@
+{% for n in host.data["serving"] %}
+ip vrf {{ n["company"]["vrf_name"] }}
+ rd {{ n["company"]["rd"] }}
+ route-target both {{ n["company"]["route_target"] }}
+ exit
+!
+router {{ n["company"]["routing_process"] }} vrf {{ n["company"]["vrf_name"] }}
+ router-id {{ n["company"]["network_id"][:-1] }}1
+ exit
+!
+int {{ n["company"]["int_to"] }}
+ ip vrf forward {{ n["company"]["vrf_name"] }}
+ ip address {{ n["company"]["network_id"][:-1] }}1 {{n["company"]["mask"]}}
+ ip {{ n["company"]["routing_process"] }} area 0
+ no shutdown
+ exit
+!
+{% endfor %}
+router bgp {{ host.data["ASN"]}}
+{% for n in host.data["bgp_neighbour"] %}
+ neigh {{ n }} remote-as {{ host.data["ASN"] }}
+ neigh {{ n }} update-source loop0
+ address-family vpnv4
+ neigh {{ n }} activate
+ neigh {{ n }} send-community
+ exit
+ !
+{% endfor %}
+router bgp {{ host.data["ASN"]}}
+{% for n in host.data["serving"] %}
+ address-family ipv4 vrf {{ n["company"]["vrf_name"] }}
+ redistribute {{ n["company"]["routing_process"] }}
+ redistribute connected
+{% endfor %}
+ exit
+ !
+{% for n in host.data["serving"] %}
+router {{ n["company"]["routing_process"] }} vrf {{ n["company"]["vrf_name"] }}
+ redistribute bgp  {{ host.data["ASN"] }} subnets
+ redistribute connected
+ exit
+ !
+{% endfor %}
+no mpls ip propagate-ttl
