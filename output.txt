@@ -165,7 +165,6 @@ PE1(config-vrf)# exit
 PE1(config)#!
 PE1(config)#router ospf 3 vrf C2
 PE1(config-router)# router-id 10.0.1.1
-% OSPF: router-id 10.0.1.1 in use by ospf process 2
 PE1(config-router)# exit
 PE1(config)#!
 PE1(config)#int e0/1
