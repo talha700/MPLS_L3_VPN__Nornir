@@ -1,9 +1,8 @@
 import time
 from nornir import InitNornir
-from nornir.core.filter import F
 from nornir.plugins.tasks import networking, text
-from nornir.plugins.functions.text import print_title
 from nornir.plugins.functions.text import print_result
+
 
 start_timer=time.perf_counter()
 
