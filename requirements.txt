@@ -16,7 +16,7 @@ ipython==7.12.0
 ipython-genutils==0.2.0
 isort==4.3.21
 jedi==0.16.0
-Jinja2==2.11.1
+Jinja2==2.11.3
 junos-eznc==2.2.1
 lazy-object-proxy==1.4.3
 lxml==4.5.0
